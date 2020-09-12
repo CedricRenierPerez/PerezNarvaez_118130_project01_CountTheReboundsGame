@@ -63,6 +63,8 @@ def getUserGuess(message,guess,win):
     return int(guess.getText())
 
 def checkIfNewHighScore(totalPoints,win):
+    #If a new HighScore has occured then the name, score, and email are written into a file
+    #if there was an existing file the old score is erased and user data since the new score is higher
     textOutput3 = Text(Point(100, 160), "New High Score! ").draw(win)
     textOutput4 = Text(Point(100, 150),"Enter your ID: ").draw(win)
     answer = Entry(Point(130, 150), 10)
