@@ -121,9 +121,8 @@ def undraw(ball,guess,textOutput,textOutput2,textOutput3,answer,court,message):
 def main():
     win = GraphWin("Count the Rebounds Game", 720, 480)
     win.setCoords(0, 0, 200, 200)
-
+    dataList = []
     dataList = checkForFile()
-
     playAgain = 'yes'
     totalPoints = 0
     n = 0
