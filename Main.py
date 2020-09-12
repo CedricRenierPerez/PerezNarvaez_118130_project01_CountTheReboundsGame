@@ -1,5 +1,15 @@
 from graphics import *
+import os.path # Will be used to test if a file exists
 #Cedric R. Perez Narvaez
+
+def checkForFile():
+    if os.path.isfile("highScore.txt"):
+        myFile = open("highScore.txt","r")
+        data = myFile.read()
+        dataList = data.split(" ")
+        myFile.close()
+        return dataList
+
 def createCourt(win):
 
     p1Rec = win.getMouse()
@@ -52,6 +62,30 @@ def getUserGuess(message,guess,win):
     win.getMouse()
     return int(guess.getText())
 
+def checkIfNewHighScore(totalPoints,win):
+    textOutput3 = Text(Point(100, 160), "New High Score! ").draw(win)
+    textOutput4 = Text(Point(100, 150),"Enter your ID: ").draw(win)
+    answer = Entry(Point(130, 150), 10)
+    answer.setText("")
+    answer.draw(win)
+    win.getMouse()
+    id = answer.getText()
+    win.getMouse()
+    textOutput5 = Text(Point(85,140),"Enter your email address: ").draw(win)
+    answer2 = Entry(Point(150,140),30)
+    answer2.setText("")
+    answer2.draw(win)
+    win.getMouse()
+    email = answer2.getText()
+    win.getMouse()
+    outFile = open("highScore.txt","w")
+    print(id,totalPoints,email,file=outFile)
+    textOutput3.undraw()
+    textOutput4.undraw()
+    textOutput5.undraw()
+    answer.undraw()
+    answer2.undraw()
+
 def askRepeat(win,answer):
     answer.setText("")
     answer.draw(win)
@@ -72,12 +106,15 @@ def main():
     win = GraphWin("Count the Rebounds Game", 720, 480)
     win.setCoords(0, 0, 200, 200)
 
+    dataList = checkForFile()
+
     playAgain = 'yes'
     totalPoints = 0
     n = 0
 
     while playAgain == 'yes':
-        message = Text(Point(100, 190), "Click on two sides to create the rectangle where the ball will bounce").draw(win)
+        message = Text(Point(100, 190), "Click on two sides to create the rectangle where the ball will bounce, use the lower part of the"
+                                        " window").draw(win)
         court = createCourt(win)
         court.setFill('black')
         court.draw(win)
@@ -104,6 +141,12 @@ def main():
         output = "Total Rebounds: " + str(numRebounds)
         textOutput = Text(Point(100, 180),output).draw(win)
         textOutput2 = Text(Point(100, 170),"Score: " + str(totalPoints)).draw(win)
+
+        if not dataList:
+            checkIfNewHighScore(totalPoints,win)
+        else:
+            if totalPoints > int(dataList[1]):
+                checkIfNewHighScore(totalPoints,win)
 
         textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time! ").draw(win)
         answer = Entry(Point(160, 160), 3)
