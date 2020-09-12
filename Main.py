@@ -10,7 +10,7 @@ def checkForFile():
         myFile.close()
         return dataList
 
-def createCourt(win):
+def createCourt(message,win):
 
     p1Rec = win.getMouse()
     p1Rec.draw(win)
@@ -18,14 +18,28 @@ def createCourt(win):
     p2Rec.draw(win)
     p1Rec.undraw()
     p2Rec.undraw()
+
+    error = True
+    while error: # I do this so that the court does not get in the way of the text that will be displayed on the top
+        if (p1Rec.getY() > 130 or p2Rec.getY() > 130):
+            message.setText("Court is to big!")
+            p1Rec = win.getMouse()
+            p1Rec.draw(win)
+            p2Rec = win.getMouse()
+            p2Rec.draw(win)
+            p1Rec.undraw()
+            p2Rec.undraw()
+        else:
+            error = False
+
     return Rectangle(p1Rec,p2Rec)
 
 def createBall(win,message,court):
-    message.setText("Know click where you want the starting point of the ball")
+    message.setText("Now click where you want the starting point of the ball")
     centerBall = win.getMouse()
 
     error = True
-    while error:
+    while error: # This checks that the ball is only spawned on the court not outside of it
         if (centerBall.getX() >=  court.getP2().getX() or centerBall.getX() <= court.getP1().getX() or
                 centerBall.getY() >= court.getP2().getY() or centerBall.getY() <= court.getP1().getY()):
             message.setText("Out of court")
@@ -115,9 +129,9 @@ def main():
     n = 0
 
     while playAgain == 'yes':
-        message = Text(Point(100, 190), "Click on two sides to create the rectangle where the ball will bounce, use the lower part of the"
+        message = Text(Point(100, 190), "Click on two sides to create the rectangle where the ball will bounce, use the lower half of the"
                                         " window").draw(win)
-        court = createCourt(win)
+        court = createCourt(message,win)
         court.setFill('black')
         court.draw(win)
 
@@ -150,7 +164,7 @@ def main():
             if totalPoints > int(dataList[1]):
                 checkIfNewHighScore(totalPoints,win)
 
-        textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time! ").draw(win)
+        textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
         answer = Entry(Point(160, 160), 3)
         playAgain = askRepeat(win,answer)
 
