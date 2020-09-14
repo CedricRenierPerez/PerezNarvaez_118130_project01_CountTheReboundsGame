@@ -76,7 +76,7 @@ def getUserGuess(message,guess,win):
     win.getMouse()
     return int(guess.getText())
 
-def checkIfNewHighScore(totalPoints,win):
+def checkIfNewHighScore(dataList,totalPoints,win):
     #If a new HighScore has occured then the name, score, and email are written into a file
     #if there was an existing file the old score is erased and user data since the new score is higher
     textOutput3 = Text(Point(100, 160), "New High Score! ").draw(win)
@@ -87,6 +87,8 @@ def checkIfNewHighScore(totalPoints,win):
     win.getMouse()
     id = answer.getText()
     win.getMouse()
+    dataList[0] = id
+    dataList[1] = totalPoints
     textOutput5 = Text(Point(85,140),"Enter your email address: ").draw(win)
     answer2 = Entry(Point(150,140),30)
     answer2.setText("")
@@ -94,6 +96,7 @@ def checkIfNewHighScore(totalPoints,win):
     win.getMouse()
     email = answer2.getText()
     win.getMouse()
+    dataList[2] = email
     outFile = open("highScore.txt","w")
     print(id,totalPoints,email,file=outFile)
     textOutput3.undraw()
@@ -161,7 +164,7 @@ def main():
             checkIfNewHighScore(totalPoints,win)
         else:
             if totalPoints > int(dataList[1]):
-                checkIfNewHighScore(totalPoints,win)
+                checkIfNewHighScore(dataList,totalPoints,win)
 
         textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
         answer = Entry(Point(160, 160), 3)
