@@ -10,6 +10,23 @@ def checkForFile():
         myFile.close()
         return dataList
 
+def messages(win):
+    message = Text(Point(100, 190),
+                   "Click on two sides to create the rectangle where the ball will bounce, use the lower half of the"
+                   " window").draw(win)
+    message2 = Text(Point(100, 180), "Start by pointing the lower left of the rectangle and then the upper right").draw(
+        win)
+    message3 = Text(Point(100, 170),
+                    "Also, draw your court below the dashed line, if not the program will warn you").draw(win)
+
+    message4 = Text(Point(100, 130),
+                    "-----------------------------------------------------------------------------------------------"
+                    "-----------------------------------------------------------------------------------------------").draw(win)
+    win.getMouse()
+    message2.undraw()
+    message3.undraw()
+    return message
+
 def createCourt(message,win):
 
     p1Rec = win.getMouse()
@@ -105,17 +122,37 @@ def checkIfNewHighScore(dataList,totalPoints,win):
     answer.undraw()
     answer2.undraw()
 
+def printReboundsScore(numRebounds,userGuess,totalPoints,win):
+    if numRebounds == userGuess:
+        totalPoints = totalPoints + 1
+
+    output = "Total Rebounds: " + str(numRebounds)
+    textOutput = Text(Point(100, 180), output).draw(win)
+    textOutput2 = Text(Point(100, 170), "Score: " + str(totalPoints)).draw(win)
+    win.getMouse()
+
+    textOutput.undraw()
+    textOutput2.undraw()
+
+    return totalPoints
+
+def checkDataList(dataList,totalPoints,win):
+    if not dataList:
+        checkIfNewHighScore(totalPoints, win)
+    else:
+        if totalPoints > int(dataList[1]):
+            checkIfNewHighScore(dataList, totalPoints, win)
+
+
 def askRepeat(win,answer):
     answer.setText("")
     answer.draw(win)
     win.getMouse()
     return answer.getText()
 
-def undraw(ball,guess,textOutput,textOutput2,textOutput3,answer,court,message):
+def undraw(ball,guess,textOutput3,answer,court,message):
     ball.undraw()
     guess.undraw()
-    textOutput.undraw()
-    textOutput2.undraw()
     textOutput3.undraw()
     answer.undraw()
     court.undraw()
@@ -131,8 +168,8 @@ def main():
     n = 0
 
     while playAgain == 'yes':
-        message = Text(Point(100, 190), "Click on two sides to create the rectangle where the ball will bounce, use the lower half of the"
-                                        " window").draw(win)
+        message = messages(win)
+
         court = createCourt(message,win)
         court.setFill('black')
         court.draw(win)
@@ -153,23 +190,14 @@ def main():
         guess = Entry(Point(135,190),3)
         userGuess = getUserGuess(message,guess,win)
 
-        if numRebounds == userGuess:
-            totalPoints = totalPoints + 1
+        totalPoints = printReboundsScore(numRebounds,userGuess,totalPoints,win)
 
-        output = "Total Rebounds: " + str(numRebounds)
-        textOutput = Text(Point(100, 180),output).draw(win)
-        textOutput2 = Text(Point(100, 170),"Score: " + str(totalPoints)).draw(win)
-
-        if not dataList:
-            checkIfNewHighScore(totalPoints,win)
-        else:
-            if totalPoints > int(dataList[1]):
-                checkIfNewHighScore(dataList,totalPoints,win)
+        checkDataList(dataList,totalPoints,win)
 
         textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
         answer = Entry(Point(160, 160), 3)
         playAgain = askRepeat(win,answer)
 
-        undraw(ball,guess,textOutput,textOutput2,textOutput3,answer,court,message)
+        undraw(ball,guess,textOutput3,answer,court,message)
 
 main()
