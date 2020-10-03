@@ -93,10 +93,26 @@ def getUserGuess(message,guess,win):
     win.getMouse()
     return int(guess.getText())
 
-def checkIfNewHighScore(dataList,totalPoints,win):
+def insertionSort(scoreList, nameList):
+    for x in range(1, len(scoreList)):
+        score = scoreList[x]
+        name = nameList[x]
+        left = x - 1
+        while left >= 0:
+            if score > scoreList[left]:
+                scoreList[left + 1] = scoreList[left]
+                nameList[left + 1] = nameList[left]
+
+                scoreList[left] = score
+                nameList[left] = name
+                left = left - 1
+            else:
+                break
+
+def checkIfNewHighScore(scoreList,nameList,totalPoints,win):
     #If a new HighScore has occured then the name, score, and email are written into a file
     #if there was an existing file the old score is erased and user data since the new score is higher
-    textOutput3 = Text(Point(100, 160), "New High Score! ").draw(win)
+    textOutput3 = Text(Point(100, 160), "Enter your user data!").draw(win)
     textOutput4 = Text(Point(100, 150),"Enter your ID: ").draw(win)
     answer = Entry(Point(130, 150), 10)
     answer.setText("")
@@ -104,23 +120,41 @@ def checkIfNewHighScore(dataList,totalPoints,win):
     win.getMouse()
     id = answer.getText()
     win.getMouse()
-    dataList[0] = id
-    dataList[1] = totalPoints
-    textOutput5 = Text(Point(85,140),"Enter your email address: ").draw(win)
-    answer2 = Entry(Point(150,140),30)
-    answer2.setText("")
-    answer2.draw(win)
+
+    scoreList.append(totalPoints)
+    nameList.append(id)
+    insertionSort(scoreList,nameList)
+    dataList = []
+    #Used to save the top 3 scores (Hall of Fame)
+    if(len(scoreList) >= 3):
+        for x in range(0,len(scoreList) - 1):
+            dataList.append(nameList[x])
+            dataList.append(str(scoreList[x]))
+            print(dataList) #Borrar esto luego
+    else:
+        for x in range(0,len(scoreList) - 1):
+            dataList.append(nameList[x])
+            dataList.append(str(scoreList[x]))
+            print(dataList) #Borrar esto luego
+
+
     win.getMouse()
-    email = answer2.getText()
-    win.getMouse()
-    dataList[2] = email
     outFile = open("highScore.txt","w")
-    print(id,totalPoints,email,file=outFile)
+
+    count = 0
+    for x in dataList:
+        if(count == 5):
+            outFile.write(x)
+        else:
+            outFile.write(x)
+            outFile.write(" ")
+        count = count + 1
+    outFile.close()
+
     textOutput3.undraw()
     textOutput4.undraw()
-    textOutput5.undraw()
     answer.undraw()
-    answer2.undraw()
+    printHallofFame(dataList, win)
 
 def printReboundsScore(numRebounds,userGuess,totalPoints,win):
     if numRebounds == userGuess:
@@ -136,12 +170,13 @@ def printReboundsScore(numRebounds,userGuess,totalPoints,win):
 
     return totalPoints
 
-def checkDataList(dataList,totalPoints,win):
-    if not dataList:
-        checkIfNewHighScore(totalPoints, win)
-    else:
-        if totalPoints > int(dataList[1]):
-            checkIfNewHighScore(dataList, totalPoints, win)
+def printHallofFame(dataList,win):
+
+    for x in range(0,len(dataList)-1,2):
+        textOutput = Text(Point(100, 180), "Hall of Fame:").draw(win)
+        textOutput2 = Text(Point(100, 170), dataList[x]+ " " + dataList[x+1]).draw(win)
+        win.getMouse()
+        textOutput2.undraw()
 
 
 def askRepeat(win,answer):
@@ -161,13 +196,23 @@ def undraw(ball,guess,textOutput3,answer,court,message):
 def main():
     win = GraphWin("Count the Rebounds Game", 720, 480)
     win.setCoords(0, 0, 200, 200)
-    dataList = []
-    dataList = checkForFile()
+    textList = []
+    textList = checkForFile()
     playAgain = 'yes'
     totalPoints = 0
     n = 0
+    print(textList)
+    print(len(textList))
+
 
     while playAgain == 'yes':
+        scoreList = []
+        nameList = []
+
+        for x in range(0, len(textList), 2):
+            nameList.append(textList[x])
+            scoreList.append(int(textList[x + 1]))
+
         message = messages(win)
 
         court = createCourt(message,win)
@@ -192,7 +237,8 @@ def main():
 
         totalPoints = printReboundsScore(numRebounds,userGuess,totalPoints,win)
 
-        checkDataList(dataList,totalPoints,win)
+        checkIfNewHighScore(scoreList,nameList,totalPoints,win)
+
 
         textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
         answer = Entry(Point(160, 160), 3)
