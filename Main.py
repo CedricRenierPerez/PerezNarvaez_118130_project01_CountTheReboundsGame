@@ -2,13 +2,24 @@ from graphics import *
 import os.path # Will be used to test if a file exists
 #Cedric R. Perez Narvaez
 
+#This will be modified with Classes
 def checkForFile():
+    nameList = []
+    scoreList = []
     if os.path.isfile("highScore.txt"):
         myFile = open("highScore.txt","r")
         data = myFile.read()
         dataList = data.split(" ")
         myFile.close()
-        return dataList
+
+
+        for x in range(0, len(dataList), 2):
+            nameList.append(dataList[x])
+            scoreList.append(int(dataList[x + 1]))
+
+        return nameList, scoreList
+    else:
+        return nameList,scoreList
 
 def messages(win):
     message = Text(Point(100, 190),
@@ -132,7 +143,7 @@ def checkIfNewHighScore(scoreList,nameList,totalPoints,win):
             dataList.append(str(scoreList[x]))
             print(dataList) #Borrar esto luego
     else:
-        for x in range(0,len(scoreList) - 1):
+        for x in range(0,len(scoreList)):
             dataList.append(nameList[x])
             dataList.append(str(scoreList[x]))
             print(dataList) #Borrar esto luego
@@ -143,7 +154,7 @@ def checkIfNewHighScore(scoreList,nameList,totalPoints,win):
 
     count = 0
     for x in dataList:
-        if(count == 5):
+        if(count == len(dataList)-1): #5
             outFile.write(x)
         else:
             outFile.write(x)
@@ -176,6 +187,7 @@ def printHallofFame(dataList,win):
         textOutput = Text(Point(100, 180), "Hall of Fame:").draw(win)
         textOutput2 = Text(Point(100, 170), dataList[x]+ " " + dataList[x+1]).draw(win)
         win.getMouse()
+        textOutput.undraw()
         textOutput2.undraw()
 
 
@@ -196,22 +208,15 @@ def undraw(ball,guess,textOutput3,answer,court,message):
 def main():
     win = GraphWin("Count the Rebounds Game", 720, 480)
     win.setCoords(0, 0, 200, 200)
-    textList = []
-    textList = checkForFile()
     playAgain = 'yes'
     totalPoints = 0
     n = 0
-    print(textList)
-    print(len(textList))
-
 
     while playAgain == 'yes':
         scoreList = []
         nameList = []
 
-        for x in range(0, len(textList), 2):
-            nameList.append(textList[x])
-            scoreList.append(int(textList[x + 1]))
+        nameList, scoreList = checkForFile()
 
         message = messages(win)
 
@@ -238,7 +243,6 @@ def main():
         totalPoints = printReboundsScore(numRebounds,userGuess,totalPoints,win)
 
         checkIfNewHighScore(scoreList,nameList,totalPoints,win)
-
 
         textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
         answer = Entry(Point(160, 160), 3)
