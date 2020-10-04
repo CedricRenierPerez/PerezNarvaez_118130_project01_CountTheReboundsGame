@@ -1,4 +1,5 @@
 from graphics import *
+from Buttons import Button
 import os.path # Will be used to test if a file exists
 #Cedric R. Perez Narvaez
 
@@ -191,28 +192,28 @@ def printHallofFame(dataList,win):
         textOutput2.undraw()
 
 
-def askRepeat(win,answer):
-    answer.setText("")
-    answer.draw(win)
-    win.getMouse()
-    return answer.getText()
 
-def undraw(ball,guess,textOutput3,answer,court,message):
+def undraw(ball,guess,textOutput3,court,message):
     ball.undraw()
     guess.undraw()
     textOutput3.undraw()
-    answer.undraw()
     court.undraw()
     message.undraw()
 
 def main():
     win = GraphWin("Count the Rebounds Game", 720, 480)
     win.setCoords(0, 0, 200, 200)
-    playAgain = 'yes'
     totalPoints = 0
     n = 0
+    continueButton = Button(win,Point(160,160),12,10,"Yes")
+    quitButton = Button(win,Point(180,160),12,10,"Quit")
+    continueButton.activate()
+    quitButton.activate()
 
-    while playAgain == 'yes':
+    textOutput = Text(Point(100, 160), "Want to play?").draw(win)
+
+    pt = win.getMouse()
+    while not quitButton.clicked(pt) and continueButton.clicked(pt):
         scoreList = []
         nameList = []
 
@@ -241,13 +242,12 @@ def main():
         userGuess = getUserGuess(message,guess,win)
 
         totalPoints = printReboundsScore(numRebounds,userGuess,totalPoints,win)
-
+        textOutput.undraw()
         checkIfNewHighScore(scoreList,nameList,totalPoints,win)
 
-        textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
-        answer = Entry(Point(160, 160), 3)
-        playAgain = askRepeat(win,answer)
+        textOutput3 = Text(Point(80, 160),"Want to play again? It gets harder every time!").draw(win)
+        pt = win.getMouse()
 
-        undraw(ball,guess,textOutput3,answer,court,message)
+        undraw(ball,guess,textOutput3,court,message)
 
 main()
