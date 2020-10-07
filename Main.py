@@ -4,7 +4,6 @@ from Game import Game
 import os.path # Will be used to test if a file exists
 #Cedric R. Perez Narvaez
 
-#This will be modified with Classes
 def checkForFile():
     nameList = []
     scoreList = []
@@ -13,7 +12,6 @@ def checkForFile():
         data = myFile.read()
         dataList = data.split(" ")
         myFile.close()
-
 
         for x in range(0, len(dataList), 2):
             nameList.append(dataList[x])
@@ -33,14 +31,12 @@ def main():
     quitButton = Button(win,Point(180,160),12,10,"Quit")
     continueButton.activate()
     quitButton.activate()
-
     textOutput = Text(Point(100, 160), "Want to play?").draw(win)
 
     pt = win.getMouse()
     while not quitButton.clicked(pt) and continueButton.clicked(pt):
         scoreList = []
         nameList = []
-
         nameList, scoreList = checkForFile()
 
         game1 = Game(win)
@@ -52,7 +48,6 @@ def main():
         changex = 1
         changey= 1
         n = n + 50
-        win.getMouse()
         textOutput.undraw()
         numRebounds = game1.gameLoop(numRebounds,changex,changey,n)
 
@@ -69,5 +64,9 @@ def main():
         textOutput3.undraw()
         game1.undraw()
 
+    continueButton.deactivate()
+    quitButton.deactivate()
+    win.getMouse()
+    win.close()
 
 main()

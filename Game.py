@@ -127,12 +127,12 @@ class Game:
             for x in range(0, len(scoreList) - 1):
                 dataList.append(nameList[x])
                 dataList.append(str(scoreList[x]))
-                print(dataList)  # Borrar esto luego
+                print(dataList)  #For testing
         else:
             for x in range(0, len(scoreList)):
                 dataList.append(nameList[x])
                 dataList.append(str(scoreList[x]))
-                print(dataList)  # Borrar esto luego
+                print(dataList)  #For testing
 
         win.getMouse()
         outFile = open("highScore.txt", "w")
