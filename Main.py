@@ -201,9 +201,6 @@ def main():
     playAgain = 'yes'
     totalPoints = 0
     n = 0
-    print(textList)
-    print(len(textList))
-
 
     while playAgain == 'yes':
         scoreList = []
@@ -238,7 +235,6 @@ def main():
         totalPoints = printReboundsScore(numRebounds,userGuess,totalPoints,win)
 
         checkIfNewHighScore(scoreList,nameList,totalPoints,win)
-
 
         textOutput3 = Text(Point(100, 160),"Want to play again? It gets harder every time!(yes/no)").draw(win)
         answer = Entry(Point(160, 160), 3)
